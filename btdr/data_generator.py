@@ -185,9 +185,12 @@ class FakeTextDataGenerator(object):
                 background_height, background_width
             )
         else:
-            background_img = background_generator.image(
-                background_height, background_width, image_dir
-            )
+            try:
+                background_img = background_generator.image(
+                    background_height, background_width, image_dir
+                )
+            except Exception as e:
+                print("Error generating background image", e)
         background_mask = Image.new(
             "RGB", (background_width, background_height), (0, 0, 0)
         )
@@ -210,9 +213,10 @@ class FakeTextDataGenerator(object):
                 print("resized_img_st \n {}".format(resized_img_st.mean))
                 print("background_img_st \n {}".format(background_img_st.mean))
 
-                return
+                # return
         except Exception as err:
-            return
+            print("Error generating background image", err)
+            # return
 
         #############################
         # Place text with alignment #
@@ -221,8 +225,10 @@ class FakeTextDataGenerator(object):
         new_text_width, _ = resized_img.size
 
         if alignment == 0 or width == -1:
+            print(background_img.size, background_mask.size)
             background_img.paste(resized_img, (margin_left, margin_top), resized_img)
             background_mask.paste(resized_mask, (margin_left, margin_top))
+            print(background_img.size, background_mask.size)
         elif alignment == 1:
             background_img.paste(
                 resized_img,

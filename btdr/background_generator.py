@@ -67,9 +67,11 @@ def image(height: int, width: int, image_dir: str) -> Image:
     images = os.listdir(image_dir)
 
     if len(images) > 0:
+        img = images[rnd.randint(0, len(images) - 1)]
         pic = Image.open(
-            os.path.join(image_dir, images[rnd.randint(0, len(images) - 1)])
+            os.path.join(image_dir, img)
         )
+        print(img)
 
         if pic.size[0] < width:
             pic = pic.resize(
