@@ -67,7 +67,7 @@ def generate_annotations(word_file="words.txt", output_folder='./output',
                     # image_mode: str = "RGB",
                     # output_bboxes: int = 0,
                 )
-                output_path = os.path.join("./annotations/", os.path.basename(file_name.strip()))
+                output_path = os.path.join("annotations/", os.path.basename(file_name.strip()))
                 word_writer.writerow([output_path.strip(), word.strip()])
 
 
