@@ -31,9 +31,6 @@ def generate_annotations(word_file="words.txt", output_folder='./output',
                                  escapechar='\\')
         with open(word_file, "r") as file:
             for i, word in enumerate(file.readlines(), index_start):
-                print(repr(word))
-                if i == 10:
-                    break
                 img, file_name = data_generator.FakeTextDataGenerator.generate(
                     index=i,
                     text=word.strip(),
