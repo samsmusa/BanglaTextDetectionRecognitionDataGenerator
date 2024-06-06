@@ -238,4 +238,4 @@ fabric.properties
 
 output
 images
-test.ipynb
+notebooks/test.ipynb

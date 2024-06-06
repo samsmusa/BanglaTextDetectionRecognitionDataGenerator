@@ -17,6 +17,21 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 
+
+def create_file_not_exist(name):
+    if not os.path.exists(name):
+        os.mknod(name)
+
+
+def create_folder_not_exist(name):
+    if not os.path.exists(name):
+        os.makedirs(name)
+
+
+def get_path(pth):
+    return os.path.join(pth)
+
+
 def load_dict(path: str) -> List[str]:
     """Read the dictionary file and returns all words in it."""
 

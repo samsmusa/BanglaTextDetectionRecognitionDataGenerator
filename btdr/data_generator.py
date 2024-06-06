@@ -8,6 +8,7 @@ import os
 import random as rnd
 
 from PIL import Image, ImageFilter, ImageStat
+from typing import List, Tuple
 
 from btdr import computer_text_generator, background_generator, distorsion_generator
 from btdr.utils import mask_to_bboxes, make_filename_valid
@@ -46,7 +47,7 @@ class FakeTextDataGenerator(object):
             orientation: int,
             space_width: int,
             character_spacing: int,
-            margins: int,
+            margins: List[int],
             fit: bool,
             output_mask: bool,
             word_split: bool,
@@ -55,7 +56,8 @@ class FakeTextDataGenerator(object):
             stroke_fill: str = "#282828",
             image_mode: str = "RGB",
             output_bboxes: int = 0,
-    ) -> Image:
+            output_path: bool = False
+    ):
         image = None
 
         margin_top, margin_left, margin_bottom, margin_right = margins
@@ -88,8 +90,8 @@ class FakeTextDataGenerator(object):
                 stroke_width,
                 stroke_fill,
             )
-        image.show()
-        random_angle = rnd.randint(0 - skewing_angle, skewing_angle)
+
+        random_angle = rnd.randrange(0 - skewing_angle, skewing_angle+1, 1)
 
         rotated_img = image.rotate(
             skewing_angle if not random_skew else random_angle, expand=1
@@ -127,6 +129,8 @@ class FakeTextDataGenerator(object):
                 horizontal=(distorsion_orientation == 1 or distorsion_orientation == 2),
             )
 
+
+
         ##################################
         # Resize image to desired format #
         ##################################
@@ -143,7 +147,9 @@ class FakeTextDataGenerator(object):
             resized_mask = distorted_mask.resize(
                 (new_width, size - vertical_margin), Image.Resampling.NEAREST
             )
-            background_width = width if width > 0 else new_width + horizontal_margin
+            background_width = width if width > new_width else new_width
+            background_width += horizontal_margin
+            # background_width = width if width > 0 else new_width + horizontal_margin
             background_height = size
         # Vertical text
         elif orientation == 1:
@@ -158,7 +164,8 @@ class FakeTextDataGenerator(object):
                 (size - horizontal_margin, new_height), Image.Resampling.NEAREST
             )
             background_width = size
-            background_height = new_height + vertical_margin
+            background_height = new_height
+            # background_height = new_height + vertical_margin
         else:
             raise ValueError("Invalid orientation")
 
@@ -184,6 +191,8 @@ class FakeTextDataGenerator(object):
         background_mask = Image.new(
             "RGB", (background_width, background_height), (0, 0, 0)
         )
+        print(distorted_img.size, background_img.size)
+
 
         ##############################################################
         # Comparing average pixel value of text and background image #
@@ -276,6 +285,8 @@ class FakeTextDataGenerator(object):
 
         # Save the image
         if out_dir is not None:
+            print("image name", image_name)
+
             final_image.save(os.path.join(out_dir, image_name))
             if output_mask == 1:
                 final_mask.save(os.path.join(out_dir, mask_name))
@@ -292,6 +303,10 @@ class FakeTextDataGenerator(object):
                             " ".join([char] + [str(v) for v in bbox] + ["0"]) + "\n"
                         )
         else:
+            print("out")
             if output_mask == 1:
                 return final_image, final_mask
             return final_image
+
+        if output_path:
+            return final_image, str(os.path.join(out_dir, image_name))
