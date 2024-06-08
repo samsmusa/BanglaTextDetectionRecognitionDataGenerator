@@ -11,7 +11,8 @@ from btdr import data_generator, utils
 
 def generate_annotations(word_file="words.txt", output_folder='./output',
                          font_dir="./btdr/fonts/", font_sizes=None,
-                         text_color=None, index_start=1, background_type=3):
+                         text_color=None, index_start=1, background_type=3,
+                         background_img_dir=None):
     if font_sizes is None:
         font_sizes = range(15, 30)
     else:
@@ -57,7 +58,7 @@ def generate_annotations(word_file="words.txt", output_folder='./output',
                     fit=True,
                     output_mask=False,
                     word_split=True,
-                    image_dir="./background",
+                    image_dir=background_img_dir,
                     output_path=True
                     # stroke_width: int = 0,
                     # stroke_fill: str = "#282828",
@@ -80,9 +81,13 @@ if __name__ == "__main__":
                         type=List[str])
     parser.add_argument("-t", "--index_start", help="starting index of image", nargs="?", type=int,
                         default=1)
-    parser.add_argument("-bg", "--bg_type", help="background type of image", nargs="?", type=int,
+    parser.add_argument("-bgt", "--bg_type", help="background type of image", nargs="?", type=int,
                         default=3)
+    parser.add_argument("-bgd", "--bg_dir", help="background image directory", nargs="?",
+                        type=int,
+                        default="./background")
     args = parser.parse_args()
 
     generate_annotations(args.words_file, args.output_folder, args.font_dir, args.font_size,
-                         args.text_color, args.index_start, background_type=args.bg_type)
+                         args.text_color, args.index_start, background_type=args.bg_type,
+                         background_img_dir=args.bg_dir)
